@@ -17,9 +17,10 @@ spring:
             # For example: http://localhost:8080/login/oauth2/code/cognito
             # See more: https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html#oauth2login-sample-redirect-uri
             redirect-uri: "{baseUrl}/login/oauth2/code/cognito"
+
         provider:
           cognito:
             issuerUri: https://cognito-idp.ap-south-1.amazonaws.com/ap-south-1_pQ0Du8sGa
             user-name-attribute: username
-            configuration-metadata:
-              end-session-endpoint: https://ap-south-1.auth.ap-south-1.amazoncognito.com/logout
+            provider-configuration-metadata:
+              end_session_endpoint: https://ap-south-1pq0du8sga.auth.ap-south-1.amazoncognito.com/logout

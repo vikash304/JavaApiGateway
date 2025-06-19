@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInit
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Configuration
 @EnableWebSecurity
@@ -41,9 +43,30 @@ public class SecurityConfig {
 
                                 // b) Launch Cognito logout endpoint on success
                                 .logoutSuccessHandler(oidcLogoutSuccessHandler())
+                                .permitAll()
+
                 );
         return http.build();
     }
+
+    /*@Bean
+    public LogoutSuccessHandler cognitoLogoutHandler(){
+        return (request, response, auth) -> {
+            String baseUrl = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .build()
+                    .toUriString();
+
+            String logoutUrl = UriComponentsBuilder
+                    .fromUriString("https://ap-south-1pq0du8sga.auth.ap-south-1.amazoncognito.com/logout")
+                    .queryParam("client_id", "l000tnbh30nu6jvqp39qajdkj")
+                    .queryParam("logout_uri", baseUrl + "/")
+                    .build()
+                    .toUriString();
+
+            response.sendRedirect(logoutUrl);
+        };
+    }*/
 
     private LogoutSuccessHandler oidcLogoutSuccessHandler() {
         OidcClientInitiatedLogoutSuccessHandler handler =
