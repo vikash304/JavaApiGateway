@@ -1,13 +1,22 @@
 package com.awsApiGateway.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class HomeController {
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     private final OAuth2AuthorizedClientService authorizedClientService;
     public HomeController(OAuth2AuthorizedClientService _authorizedClientService){
@@ -25,7 +34,17 @@ public class HomeController {
 
         String accessToken = authorizedClient.getAccessToken().getTokenValue();
         System.out.println("Access Token: " + accessToken);
-        return "tokenView";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "http://localhost:8082/secure", // API URL of the other Spring Boot app
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
+        return response.getBody();
     }
 
     @GetMapping("/")
